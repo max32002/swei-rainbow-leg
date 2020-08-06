@@ -2,7 +2,7 @@
 
 獅尾彩虹腿基於[思源黑體](https://github.com/adobe-fonts/source-han-sans)的上半邊變圓改造，更加簡明現代化的字體。支援简体中文、繁體中文、韓文與日文；歡迎大家自由應用、自由優化、自由改作！
 
-獅尾XD珍珠的特色是，上半邊圓體+下半邊黑體，一個綜合的字體，「口」字的上沿有一點點像彩虹形狀。
+獅尾彩虹腿的特色是，上半邊圓體+下半邊黑體，一個綜合的字體，「口」字的上沿有一點點像彩虹形狀。
 
 ![字體預覽](https://github.com/max32002/swei-rainbow-leg/raw/master/preview/welcome.png)
 

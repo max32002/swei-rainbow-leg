@@ -300,9 +300,12 @@ class Rule(Rule.Rule):
 
                 # for RAINBOW
                 if self.config.PROCESS_MODE in ["RAINBOW"]:
+                    fail_code = 133
+                    #print("before is_match_pattern:", is_match_pattern)
                     if is_match_pattern:
-                        is_match_d_base_rule, fail_code = self.going_xd_down(format_dict_array,idx)
-                        is_match_pattern = not is_match_d_base_rule
+                        is_match_d_base_rule, fail_code = self.going_rainbow_up(format_dict_array,idx)
+                        is_match_pattern = is_match_d_base_rule
+                    #print("after is_match_pattern:", is_match_pattern)
 
                 inside_stroke_flag = False
                 # B2,B4 skip check image.

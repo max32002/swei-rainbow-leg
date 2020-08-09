@@ -115,7 +115,7 @@ class Rule(Rule.Rule):
                 #is_debug_mode = True
 
                 if is_debug_mode:
-                    debug_coordinate_list = [[125,281]]
+                    debug_coordinate_list = [[454,451]]
                     if not([format_dict_array[idx]['x'],format_dict_array[idx]['y']] in debug_coordinate_list):
                         continue
 
@@ -498,21 +498,26 @@ class Rule(Rule.Rule):
 
                 # for D.Lucy
                 if self.config.PROCESS_MODE in ["D"]:
+                    fail_code = 131
                     if is_match_pattern:
                         is_match_d_base_rule, fail_code = self.going_d_right(format_dict_array,idx)
                         is_match_pattern = is_match_d_base_rule
 
                 # for XD
                 if self.config.PROCESS_MODE in ["XD"]:
+                    fail_code = 132
                     if is_match_pattern:
                         is_match_d_base_rule, fail_code = self.going_xd_down(format_dict_array,idx)
                         is_match_pattern = is_match_d_base_rule
 
                 # for RAINBOW
                 if self.config.PROCESS_MODE in ["RAINBOW"]:
+                    fail_code = 133
+                    #print("before is_match_pattern:", is_match_pattern)
                     if is_match_pattern:
-                        is_match_d_base_rule, fail_code = self.going_xd_down(format_dict_array,idx)
-                        is_match_pattern = not is_match_d_base_rule
+                        is_match_d_base_rule, fail_code = self.going_rainbow_up(format_dict_array,idx)
+                        is_match_pattern = is_match_d_base_rule
+                    #print("after is_match_pattern:", is_match_pattern)
 
                 # compare distance, muse large than our "large round"
                 if is_match_pattern:
@@ -698,7 +703,7 @@ class Rule(Rule.Rule):
 
                 if is_debug_mode:
                     if not is_match_pattern:
-                        print(idx,"debug fail_code #5:", fail_code)
+                        print("idx:", idx,", debug fail_code #5:", fail_code)
                     else:
                         print("match rule #5:",idx)
 

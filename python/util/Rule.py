@@ -1618,3 +1618,48 @@ class Rule():
 
 
         return going_down, fail_code
+
+    # purpose: check for Rainbow base rule.
+    # return:
+    #   True: match, path going right.
+    #   False: not match, path going left.
+    # PS: directly use not XD, cause "五" uni4E94 fail.
+    def going_rainbow_up(self, format_dict_array, idx):
+        going_up = False
+        is_match_pattern = False
+        fail_code = 0
+
+        nodes_length = len(format_dict_array)
+
+        if not is_match_pattern:
+            # | sharp.
+            if format_dict_array[(idx+0)%nodes_length]['x_equal_fuzzy']:
+                if format_dict_array[(idx+0)%nodes_length]['y_direction'] > 0:
+                    fail_code = 2201
+                    is_match_pattern = True
+                    going_up = True
+
+        if not is_match_pattern:
+            # - sharp.
+            if format_dict_array[(idx+0)%nodes_length]['y_equal_fuzzy']:
+                if format_dict_array[(idx+1)%nodes_length]['y_direction'] < 0:
+                    fail_code = 2202
+                    is_match_pattern = True
+                    going_up = True
+
+        if not is_match_pattern:
+            # \ sharp. go up.
+            # / sharp. go down.
+            if format_dict_array[(idx+0)%nodes_length]['y_direction'] > 0:
+                fail_code = 2203
+                is_match_pattern = True
+                going_up = True
+
+            # for < sharp. "女" 的左半邊。
+            if format_dict_array[(idx+1)%nodes_length]['y_direction'] < 0:
+                fail_code = 2204
+                is_match_pattern = True
+                going_up = True
+
+
+        return going_up, fail_code

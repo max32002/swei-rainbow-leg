@@ -92,9 +92,10 @@ class Rule(Rule.Rule):
                 y2 = format_dict_array[(idx+2)%nodes_length]['y']
 
                 # use more close coordinate.
-                if format_dict_array[(idx+0)%nodes_length]['t']=='c':
-                    x0 = format_dict_array[(idx+0)%nodes_length]['x2']
-                    y0 = format_dict_array[(idx+0)%nodes_length]['y2']
+                # PS: 下面這2個if, 在很多之前的版本，都沒有被執行，效果也很好，也許可以直接註解掉。
+                if format_dict_array[(idx+1)%nodes_length]['t']=='c':
+                    x0 = format_dict_array[(idx+1)%nodes_length]['x2']
+                    y0 = format_dict_array[(idx+1)%nodes_length]['y2']
                 if format_dict_array[(idx+2)%nodes_length]['t']=='c':
                     x2 = format_dict_array[(idx+2)%nodes_length]['x1']
                     y2 = format_dict_array[(idx+2)%nodes_length]['y1']

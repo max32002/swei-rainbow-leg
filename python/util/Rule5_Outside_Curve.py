@@ -137,6 +137,7 @@ class Rule(Rule.Rule):
 
                 # use more close coordinate.
                 #print("orig x0,y0,x2,y2:", x0,y0,x2,y2)
+                # PS: 下面這2個if, 在很多之前的版本，都沒有被執行，效果也很好，也許可以直接註解掉。
                 if format_dict_array[(idx+1)%nodes_length]['t']=='c':
                     x0 = format_dict_array[(idx+1)%nodes_length]['x2']
                     y0 = format_dict_array[(idx+1)%nodes_length]['y2']

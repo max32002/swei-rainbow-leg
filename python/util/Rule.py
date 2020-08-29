@@ -679,6 +679,8 @@ class Rule():
         format_dict_array[(idx+1)%nodes_length]['x']= previous_x
         format_dict_array[(idx+1)%nodes_length]['y']= previous_y
 
+        is_middle_dot_in_skip_rule = False
+
         old_code_string = format_dict_array[(idx+1)%nodes_length]['code']
         old_code_array = old_code_string.split(' ')
         
@@ -734,6 +736,7 @@ class Rule():
         if old_code_string in skip_coordinate_rule:
             #print("+1 old code in rule:", old_code_string)
             #print("+1 update as new code in rule:", new_code)
+            is_middle_dot_in_skip_rule = True
             skip_coordinate_rule.append(new_code)
 
         # update [next next curve]
@@ -870,6 +873,11 @@ class Rule():
         format_dict_array.insert(insert_idx, dot_dict)
         nodes_length = len(format_dict_array)
 
+        # for fix uni5E3D 帽的冒的右上角，因為套用 coner curve 後，原本 rule#2 的 skip recode 被洗掉。
+        if is_middle_dot_in_skip_rule:
+            skip_coordinate_rule.append(new_code)
+            
+
         # 因為較短邊 <= round_offset, 需要合併節點。
         if idx >= insert_idx:
             idx += 1
@@ -939,11 +947,14 @@ class Rule():
 
             # 己忘記什麼情況下需要使用到這一段code, 
             # 但加了之後，會讓 uni7345 獅的帀裡的一個轉角沒套用到效果.
+            # 目前先設為False不跑，不跑也有問題，就會可能會多套用效果。
             
             # [TODO]:找到為什麼加這段code,是 uni7D93 經的幺，
             # 在「沒有」做 offset 的情況下，會發生一連串的重覆套用，
+            
             # 因為第一點產生完是 clockwise, 第二點原本是 counter clockwise,
             # Rule5/Rule99, 會先用 virtual dot 做比對，會變成銳角。
+            
             # 解法，是遇到第二段edge=='c'時，clockwise + counter clockwise, 
             # 這個情況下，做skip_coordinate_rule.append() 
             if False:
@@ -1352,6 +1363,118 @@ class Rule():
         target_index = (idx+3)%nodes_length
         format_dict_array.insert(target_index,dot_dict)
         #print("insert +3 idx:%d, code:%s" % (target_index, new_code))
+
+        return center_x,center_y
+
+
+    # for rectangel version. ex: rule#1,#2,#3
+    def apply_3t_transform(self,format_dict_array,idx,skip_coordinate_rule):
+        nodes_length = len(format_dict_array)
+
+        center_x = int((format_dict_array[(idx+1)%nodes_length]['x']+format_dict_array[(idx+2)%nodes_length]['x'])/2)
+        center_y = int((format_dict_array[(idx+1)%nodes_length]['y']+format_dict_array[(idx+2)%nodes_length]['y'])/2)
+        
+        x0 = format_dict_array[(idx+0)%nodes_length]['x']
+        y0 = format_dict_array[(idx+0)%nodes_length]['y']
+        
+        x1 = format_dict_array[(idx+1)%nodes_length]['x']
+        y1 = format_dict_array[(idx+1)%nodes_length]['y']
+        
+        x2 = format_dict_array[(idx+2)%nodes_length]['x']
+        y2 = format_dict_array[(idx+2)%nodes_length]['y']
+        
+        x3 = format_dict_array[(idx+3)%nodes_length]['x']
+        y3 = format_dict_array[(idx+3)%nodes_length]['y']
+
+        # keep original value.
+        orig_x0 = x0
+        orig_y0 = y0
+        orig_x3 = x3
+        orig_y3 = y3
+
+        # PS: in this rule, the value is fixed.
+        #     but in Rule5, this value will be change.
+        orig_x2 = x2
+        orig_y2 = y2
+
+        # 使用較短的邊。
+        round_length_1 = self.config.ROUND_OFFSET
+        if format_dict_array[(idx+0)%nodes_length]['distance'] < self.config.ROUND_OFFSET:
+            round_length_1 = format_dict_array[(idx+0)%nodes_length]['distance']
+        round_length_2 = self.config.ROUND_OFFSET
+        if format_dict_array[(idx+2)%nodes_length]['distance'] < self.config.ROUND_OFFSET:
+            round_length_2 = format_dict_array[(idx+2)%nodes_length]['distance']
+
+        # use more close coordinate.
+        if format_dict_array[(idx+1)%nodes_length]['t']=='c':
+            x_from = x0
+            y_from = y0
+            x_center = format_dict_array[(idx+1)%nodes_length]['x2']
+            y_center = format_dict_array[(idx+1)%nodes_length]['y2']
+            x0,y0 = self.compute_curve_new_xy(x_from,y_from,x_center,y_center,x1,y1,round_length_1)
+        
+        if format_dict_array[(idx+3)%nodes_length]['t']=='c':
+            x_from = x3
+            y_from = y3
+            x_center = format_dict_array[(idx+3)%nodes_length]['x1']
+            y_center = format_dict_array[(idx+3)%nodes_length]['y1']
+            #print("x_from,y_from,x_center,y_center,x2,y2,round_length_2:",x_from,y_from,x_center,y_center,x2,y2,round_length_2)
+            x3,y3 = self.compute_curve_new_xy(x_from,y_from,x_center,y_center,x2,y2,round_length_2)
+            #print("x3,y3:",x3,y3)
+
+        new_x1, new_y1 = spline_util.two_point_extend(x0,y0,x1,y1,-1 * round_length_1)
+        new_x2, new_y2 = spline_util.two_point_extend(x3,y3,x2,y2,-1 * round_length_2)
+
+
+        new_center_x = int((new_x1 + new_x2) / 2)
+        new_center_y = int((new_y1 + new_y2) / 2)
+
+        dot1_x = int((new_center_x+new_x1) / 2)
+        dot1_y = int((new_center_y+new_y1) / 2)
+
+        dot3_x = int((new_center_x+new_x2) / 2)
+        dot3_y = int((new_center_y+new_y2) / 2)
+
+        # convert to l
+        new_code = ' %d %d l 1\n' % (x2, y2)
+        dot_dict={}
+        dot_dict['t']='l'
+        dot_dict['code']=new_code
+        format_dict_array[(idx+2)%nodes_length]=dot_dict
+        self.apply_code(format_dict_array,(idx+2)%nodes_length)
+
+        # append new #1
+        new_code = ' %d %d l 1\n' % (dot3_x, dot3_y)
+        dot_dict={}
+        dot_dict['x']=dot3_x
+        dot_dict['y']=dot3_y
+        dot_dict['t']='l'
+        dot_dict['code']=new_code
+        target_index = (idx+2)%nodes_length
+        format_dict_array.insert(target_index,dot_dict)
+        skip_coordinate_rule.append(new_code)
+
+        # append new #2
+        new_code = ' %d %d l 1\n' % (center_x, center_y)
+        dot_dict={}
+        dot_dict['x']=center_x
+        dot_dict['y']=center_y
+        dot_dict['t']='l'
+        dot_dict['code']=new_code
+        target_index = (idx+2)%nodes_length
+        format_dict_array.insert(target_index,dot_dict)
+        skip_coordinate_rule.append(new_code)
+
+        # append new #3
+        new_code = ' %d %d l 1\n' % (dot1_x, dot1_y)
+        dot_dict={}
+        dot_dict['x']=dot1_x
+        dot_dict['y']=dot1_y
+        dot_dict['t']='l'
+        dot_dict['code']=new_code
+        target_index = (idx+2)%nodes_length
+        format_dict_array.insert(target_index,dot_dict)
+        skip_coordinate_rule.append(new_code)
 
         return center_x,center_y
     

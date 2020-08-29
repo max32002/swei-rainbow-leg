@@ -362,6 +362,14 @@ class Spline():
         #DISABLE_ALL_RULE = True    # debug specific rule.
 
         # start process here.
+        #print("key:", key)
+        # for debug target key.
+        debug_key = -1
+        # put debug key here.
+        debug_key = -1
+        if debug_key > -1:
+            if key != debug_key:
+                return is_modified, inside_stroke_dict, skip_coordinate, skip_coordinate_rule
         spline_dict = stroke_dict[key]
 
         from . import Rule1_Row
@@ -448,8 +456,6 @@ class Spline():
         #print("Rule#1 redo_count:", redo_count)
         ru1 = None
 
-
-
         return is_modified, inside_stroke_dict, skip_coordinate, skip_coordinate_rule
 
     # run both in clockwise and counter clockwise.
@@ -505,7 +511,7 @@ class Spline():
             redo_count+=1
             if redo_count==100:
                 print("occure bug at rule#12!")
-            redo_travel,idx, inside_stroke_dict,skip_coordinate=ru12.apply(spline_dict, idx, inside_stroke_dict, skip_coordinate)
+            redo_travel,idx, inside_stroke_dict,skip_coordinate,skip_coordinate_rule=ru12.apply(spline_dict, idx, inside_stroke_dict, skip_coordinate,skip_coordinate_rule)
             if redo_travel:
                 is_modified = True
         ru12 = None
@@ -525,7 +531,7 @@ class Spline():
             redo_count+=1
             if redo_count==100:
                 print("occure bug at rule#13!")
-            redo_travel,idx, inside_stroke_dict,skip_coordinate=ru13.apply(spline_dict, idx, inside_stroke_dict, skip_coordinate)
+            redo_travel,idx, inside_stroke_dict,skip_coordinate,skip_coordinate_rule=ru13.apply(spline_dict, idx, inside_stroke_dict, skip_coordinate,skip_coordinate_rule)
             if redo_travel:
                 is_modified = True
         ru13 = None
@@ -665,13 +671,13 @@ class Spline():
         # PS: trace_basic() is included in trace_common()
         is_common_enable = True
 
-        if self.config.PROCESS_MODE in ["B2","B4","XD","RAINBOW","HALFMOON","NUT8"]:
+        if self.config.PROCESS_MODE in ["B2","B4","XD","RAINBOW","HALFMOON","NUT8","3TSANS"]:
             is_common_enable = False
 
         if is_common_enable:
             is_modified, inside_stroke_dict, skip_coordinate, skip_coordinate_rule = self.trace_common(stroke_dict, key, unicode_int, bmp_image, y_offset, inside_stroke_dict, skip_coordinate, skip_coordinate_rule)
         else:
-            if self.config.PROCESS_MODE in ["XD","RAINBOW","HALFMOON"]:
+            if self.config.PROCESS_MODE in ["XD","RAINBOW","HALFMOON","NUT8","3TSANS"]:
                 base_is_modified, inside_stroke_dict, skip_coordinate, skip_coordinate_rule = self.trace_basic(stroke_dict, key, unicode_int, bmp_image, y_offset, inside_stroke_dict, skip_coordinate, skip_coordinate_rule)
                 if base_is_modified:
                     is_modified = True
@@ -682,7 +688,7 @@ class Spline():
         idx=-1
         redo_travel=False   # Disable
         redo_travel=True    # Enable
-        if self.config.PROCESS_MODE in ["B2","B4","NUT8"]:
+        if self.config.PROCESS_MODE in ["B2","B4","NUT8","3TSANS"]:
             redo_travel = False
 
         if DISABLE_ALL_RULE:
@@ -704,9 +710,14 @@ class Spline():
         #print("start Rule # 99...")
         idx=-1
         redo_travel=False   # Disable
+
         # [TODO]:攩，的黑的點，因為 Rule#12,13 與 Rule#99 會交互作作，暫時先註解，等有空再開啟Rule#99
-        if self.config.PROCESS_MODE in ["B2","B4","NUT8"]:
-            redo_travel=True    # Enable
+        #if self.config.PROCESS_MODE in ["B2","B4","NUT8"]:
+        redo_travel=True    # Enable
+
+        if self.config.PROCESS_MODE in ["3TSANS"]:
+            redo_travel = False
+
         if DISABLE_ALL_RULE:
             redo_travel=False
             pass
@@ -762,13 +773,13 @@ class Spline():
         # PS: trace_basic() is included in trace_common()
         is_common_enable = True
 
-        if self.config.PROCESS_MODE in ["B2","B4","XD","RAINBOW","HALFMOON","NUT8"]:
+        if self.config.PROCESS_MODE in ["B2","B4","XD","RAINBOW","HALFMOON","NUT8","3TSANS"]:
             is_common_enable = False
 
         if is_common_enable:
             is_modified, inside_stroke_dict, skip_coordinate, skip_coordinate_rule = self.trace_common(stroke_dict, key, unicode_int, bmp_image, y_offset, inside_stroke_dict, skip_coordinate, skip_coordinate_rule)
         else:
-            if self.config.PROCESS_MODE in ["XD","RAINBOW","HALFMOON"]:
+            if self.config.PROCESS_MODE in ["XD","RAINBOW","HALFMOON","NUT8","3TSANS"]:
                 base_is_modified, inside_stroke_dict, skip_coordinate, skip_coordinate_rule = self.trace_basic(stroke_dict, key, unicode_int, bmp_image, y_offset, inside_stroke_dict, skip_coordinate, skip_coordinate_rule)
                 if base_is_modified:
                     is_modified = True
@@ -786,7 +797,7 @@ class Spline():
         idx=-1
         redo_travel=False   # Disable
         redo_travel=True    # Enable
-        if self.config.PROCESS_MODE in ["B2","B4","NUT8"]:
+        if self.config.PROCESS_MODE in ["B2","B4","NUT8","3TSANS"]:
             redo_travel = False
 
         if DISABLE_ALL_RULE:
@@ -811,9 +822,14 @@ class Spline():
         #print("start Rule # 99...")
         idx=-1
         redo_travel=False   # Disable
+        
         # [TODO]:攩，的黑的點，因為 Rule#12,13 與 Rule#99 會交互作作，暫時先註解，等有空再開啟Rule#99
-        if self.config.PROCESS_MODE in ["B2","B4","NUT8"]:
-            redo_travel=True    # Enable
+        #if self.config.PROCESS_MODE in ["B2","B4","NUT8"]:
+        redo_travel=True    # Enable
+        
+        if self.config.PROCESS_MODE in ["3TSANS"]:
+            redo_travel = False
+
         if DISABLE_ALL_RULE:
             redo_travel=False
             pass
@@ -821,7 +837,7 @@ class Spline():
         while redo_travel:
             redo_count+=1
             if redo_count==200:
-                print("occure bug at rule#9!")
+                print("occure bug at rule#99!")
 
             black_mode = True
             redo_travel,idx, inside_stroke_dict,skip_coordinate, skip_coordinate_rule=ru99.apply(spline_dict, idx, inside_stroke_dict, skip_coordinate, skip_coordinate_rule, black_mode)

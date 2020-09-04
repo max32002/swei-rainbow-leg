@@ -4,6 +4,8 @@
 
 獅尾彩虹腿的特色是，上半邊圓體+下半邊黑體，一個綜合的字體，「口」字的上沿有一點點像彩虹形狀。
 
+「獅尾霓腿黑體」與「獅尾彩虹腿」的主要差別在筆觸是否有做調整，霓腿所套用的效果較少，在筆觸沒有做調整。
+
 ![字體預覽](https://github.com/max32002/swei-rainbow-leg/raw/master/preview/welcome.png)
 
 和思源黑體一樣，支援7種的字重：
@@ -76,6 +78,10 @@ https://max-everyday.com/2020/08/b2-hana-font/
 https://max-everyday.com/2020/08/hana-meatball/
 
 獅尾黑體家族：
+* 獅尾霓腿黑體 Swei Bow Leg
+https://max-everyday.com/2020/09/swei-bow-leg/
+* 獅尾蝙蝠圓體 Swei Bat Sans
+https://max-everyday.com/2020/09/swei-bat-sans/
 * 獅尾牙膏圓體 Swei Toothpaste
 https://max-everyday.com/2020/09/swei-toothpaste/
 * 獅尾三角黑體 Swei 3T Sans
@@ -91,7 +97,7 @@ https://max-everyday.com/2020/07/swei-b2-sans/
 * 獅尾腿圓 Swei Gothic Leg
 https://max-everyday.com/2020/08/swei-gothic-leg/
 * 獅尾彩虹腿 Swei Rainbow Leg
-https://max-everyday.com/2020/08/swei-toothpaste/
+https://max-everyday.com/2020/08/swei-rainbow-leg/
 * 獅尾XD珍珠 Swei XD Pearl
 https://max-everyday.com/2020/07/swei-xd-pearl/
 * 獅尾D露西 Swei D Lucy
@@ -103,7 +109,7 @@ https://max-everyday.com/2020/06/taiwanpearl/
 * 獅尾圓體 Swei Gothic
 https://max-everyday.com/2020/04/swei-gothic/
 * 獅尾黑體 Swei Sans
-https://max-everyday.com/2020/03/swei-toothpaste/
+https://max-everyday.com/2020/03/swei-sans/
 
 獅尾宋體家族：
 * 獅尾B2宋朝 Swei B2 Serif
